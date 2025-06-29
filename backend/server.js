@@ -16,20 +16,26 @@ connectCloudinary();
 
 // ✅ CORS configuration (must come early)
 const allowedOrigins = [
-  process.env.URL,
-  "https://doctor-appointment-panel1.vercel.app", // your frontend
+  "https://hospital-a2v8-h7vjasj1s-satyaprakashswain7s-projects.vercel.app",
+  "http://localhost:3000", // optional for local testing
 ];
 
 app.use(
   cors({
-    origin: "*", // allow all origins
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false, // should be false when origin is "*"
   })
 );
 
-// ✅ Handle OPTIONS requests early
+// ✅ Respond to preflight requests
 app.options("*", cors());
 
 // ✅ Other middlewares
